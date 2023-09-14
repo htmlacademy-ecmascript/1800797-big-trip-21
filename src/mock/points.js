@@ -3,38 +3,38 @@ import { getRandomArrayElement } from '../utils.js';
 
 const mockTasks = [
   {
-    id: 'f4b62099-293f-4c3d-a702-94eec4a2808c',
+    id: '1',
     base_price: 1100,
     date_from: '2019-07-10T22:55:56.845Z',
     date_to: '2019-07-11T11:22:13.375Z',
-    destination: 'bfa5cb75-a1fe-4b77-a83c-0e528e910e04',
+    destination: '2',
     is_favorite: false,
     offers: [
-      'b4c3e4e6-9053-42ce-b747-e281314baa31'
+      '1'
     ],
     type: 'taxi'
   },
   {
-    id: 'f4b62099-293f-4c3d-a702-94eec4a2808c',
-    base_price: 1100,
+    id: '2',
+    base_price: 2200,
     date_from: '2019-07-10T22:55:56.845Z',
     date_to: '2019-07-11T11:22:13.375Z',
-    destination: 'bfa5cb75-a1fe-4b77-a83c-0e528e910e04',
+    destination: '3',
     is_favorite: false,
     offers: [
-      'b4c3e4e6-9053-42ce-b747-e281314baa31'
+      '2'
     ],
     type: 'plane'
   },
   {
-    id: 'f4b62099-293f-4c3d-a702-94eec4a2808c',
-    base_price: 1100,
+    id: '3',
+    base_price: 3300,
     date_from: '2019-07-10T22:55:56.845Z',
     date_to: '2019-07-11T11:22:13.375Z',
-    destination: 'bfa5cb75-a1fe-4b77-a83c-0e528e910e04',
+    destination: '4',
     is_favorite: false,
     offers: [
-      'b4c3e4e6-9053-42ce-b747-e281314baa31'
+      '3'
     ],
     type: 'train'
   }

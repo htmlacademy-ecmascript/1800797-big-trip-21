@@ -1,0 +1,62 @@
+const offers = [
+  {
+    "type": "taxi",
+    "offers": [
+      {
+        "id": "1",
+        "title": "Upgrade to a business class",
+        "price": 120
+      },
+      {
+        "id": "2",
+        "title": "Upgrade to a extra business class",
+        "price": 220
+      },
+      {
+        "id": "3",
+        "title": "Upgrade to a business class for richmen",
+        "price": 350
+      },
+      {
+        "id": "4",
+        "title": "Upgrade to a business-elite class",
+        "price": 500
+      }
+    ]
+  },
+  {
+    "type": "plane",
+    "offers": [
+      {
+        "id": "1",
+        "title": "Upgrade plane to a sitted place",
+        "price": 1225
+      },
+      {
+        "id": "2",
+        "title": "Upgrade plane to a seat with extra luggage",
+        "price": 2240
+      }
+    ]
+  },
+  {
+    "type": "train",
+    "offers": [
+      {
+        "id": "1",
+        "title": "Upgrade train to a business class",
+        "price": 1120
+      },
+      {
+        "id": "2",
+        "title": "Upgrade train to a extra business class",
+        "price": 2220
+      },
+      {
+        "id": "3",
+        "title": "Upgrade train to a business class for richmen",
+        "price": 3350
+      }
+    ]
+  }
+]

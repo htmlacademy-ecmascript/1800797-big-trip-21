@@ -1,12 +1,18 @@
 import {createElement} from '../../render.js';
 
+const icons = {
+  taxi: 'taxi',
+  train: 'train',
+  plane: 'flight'
+};
+
 function createPointViewTemplate(event) {
   return `
   <li class="trip-events__item">
   <div class="event">
-    <time class="event__date" datetime="2019-03-18">MAR 18</time>
+    <time class="event__date" datetime="2019-03-18">${event.date_from}</time>
     <div class="event__type">
-      <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
+      <img class="event__type-icon" width="42" height="42" src="img/icons/${icons[event.type]}.png" alt="Event type icon">
     </div>
     <h3 class="event__title">${event.type} Amsterdam</h3>
     <div class="event__schedule">
@@ -18,7 +24,7 @@ function createPointViewTemplate(event) {
       <p class="event__duration">30M</p>
     </div>
     <p class="event__price">
-      &euro;&nbsp;<span class="event__price-value">20</span>
+      &euro;&nbsp;<span class="event__price-value">${event.base_price}</span>
     </p>
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">

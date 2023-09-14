@@ -1,4 +1,4 @@
-import { getRandomEvent } from '../mock/task.js';
+import { getRandomEvent } from '../mock/points.js';
 
 const TASK_COUNT = 10;
 
