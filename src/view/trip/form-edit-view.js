@@ -1,13 +1,13 @@
 import {createElement} from '../../render.js';
 
-function createFormEditViewTemplate() {
+function createFormEditViewTemplate(point, destinations) {
   return `
   <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
                   <div class="event__type-wrapper">
                     <label class="event__type  event__type-btn" for="event-type-toggle-1">
                       <span class="visually-hidden">Choose event type</span>
-                      <img class="event__type-icon" width="17" height="17" src="img/icons/flight.png" alt="Event type icon">
+                      <img class="event__type-icon" width="17" height="17" src="img/icons/${point.type}.png" alt="Event type icon">
                     </label>
                     <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -65,9 +65,9 @@ function createFormEditViewTemplate() {
 
                   <div class="event__field-group  event__field-group--destination">
                     <label class="event__label  event__type-output" for="event-destination-1">
-                      Flight
+                      ${point.type}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Geneva" list="destination-list-1">
+                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinations.getById(point.destination).name}" list="destination-list-1">
                     <datalist id="destination-list-1">
                       <option value="Amsterdam"></option>
                       <option value="Geneva"></option>
@@ -148,7 +148,7 @@ function createFormEditViewTemplate() {
 
                   <section class="event__section  event__section--destination">
                     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-                    <p class="event__destination-description">Geneva is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Geneva). Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc.</p>
+                    <p class="event__destination-description">${destinations.getById(point.destination).description}</p>
 
                     <div class="event__photos-container">
                       <div class="event__photos-tape">
@@ -165,8 +165,13 @@ function createFormEditViewTemplate() {
 }
 
 export default class FormEditView {
+  constructor(point, destinations){
+    this.point = point;
+    this.destinations = destinations;
+  }
+
   getTemplate() {
-    return createFormEditViewTemplate();
+    return createFormEditViewTemplate(this.point, this.destinations);
   }
 
   getElement() {
