@@ -1,6 +1,12 @@
-import {createElement} from '../../render.js';
+import { createElement } from '../../render.js';
+import FormOfferView from './form-offer-view.js';
 
-function createFormEditViewTemplate(point, destinations) {
+function getOffers(type, offers) {
+  console.log(offers.get().find((item) => item.type === type).offers)
+  return offers.get().find((item) => item.type === type).offers;
+}
+
+function createFormEditViewTemplate(point, destinations, offers) {
   return `
   <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
@@ -88,7 +94,7 @@ function createFormEditViewTemplate(point, destinations) {
                       <span class="visually-hidden">Price</span>
                       &euro;
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
+                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${point.base_price}">
                   </div>
 
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -99,50 +105,7 @@ function createFormEditViewTemplate(point, destinations) {
                     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
                     <div class="event__available-offers">
-                      <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-                        <label class="event__offer-label" for="event-offer-luggage-1">
-                          <span class="event__offer-title">Add luggage</span>
-                          &plus;&euro;&nbsp;
-                          <span class="event__offer-price">30</span>
-                        </label>
-                      </div>
-
-                      <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked>
-                        <label class="event__offer-label" for="event-offer-comfort-1">
-                          <span class="event__offer-title">Switch to comfort class</span>
-                          &plus;&euro;&nbsp;
-                          <span class="event__offer-price">100</span>
-                        </label>
-                      </div>
-
-                      <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
-                        <label class="event__offer-label" for="event-offer-meal-1">
-                          <span class="event__offer-title">Add meal</span>
-                          &plus;&euro;&nbsp;
-                          <span class="event__offer-price">15</span>
-                        </label>
-                      </div>
-
-                      <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" name="event-offer-seats">
-                        <label class="event__offer-label" for="event-offer-seats-1">
-                          <span class="event__offer-title">Choose seats</span>
-                          &plus;&euro;&nbsp;
-                          <span class="event__offer-price">5</span>
-                        </label>
-                      </div>
-
-                      <div class="event__offer-selector">
-                        <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train">
-                        <label class="event__offer-label" for="event-offer-train-1">
-                          <span class="event__offer-title">Travel by train</span>
-                          &plus;&euro;&nbsp;
-                          <span class="event__offer-price">40</span>
-                        </label>
-                      </div>
+                      ${getOffers(point.type, offers).map((item, i) => new FormOfferView(item, i, point.offers).getTemplate()).join('')}
                     </div>
                   </section>
 
@@ -152,11 +115,9 @@ function createFormEditViewTemplate(point, destinations) {
 
                     <div class="event__photos-container">
                       <div class="event__photos-tape">
-                        <img class="event__photo" src="img/photos/1.jpg" alt="Event photo">
-                        <img class="event__photo" src="img/photos/2.jpg" alt="Event photo">
-                        <img class="event__photo" src="img/photos/3.jpg" alt="Event photo">
-                        <img class="event__photo" src="img/photos/4.jpg" alt="Event photo">
-                        <img class="event__photo" src="img/photos/5.jpg" alt="Event photo">
+                        ${destinations.getById(point.destination).pictures.map(item =>
+                            `<img class="event__photo" src="${item.src}" alt="${item.description}">`
+                          ).join('')}
                       </div>
                     </div>
                   </section>
@@ -165,13 +126,14 @@ function createFormEditViewTemplate(point, destinations) {
 }
 
 export default class FormEditView {
-  constructor(point, destinations){
+  constructor(point, destinations, offers) {
+    this.offers = offers;
     this.point = point;
     this.destinations = destinations;
   }
 
   getTemplate() {
-    return createFormEditViewTemplate(this.point, this.destinations);
+    return createFormEditViewTemplate(this.point, this.destinations, this.offers);
   }
 
   getElement() {

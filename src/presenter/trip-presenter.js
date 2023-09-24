@@ -7,7 +7,6 @@ import PointOfferView from '../view/trip/points/point-offer-view.js';
 
 export default class TripPresenter {
   constructor(eventModel, destinationModel, offerModel, pointModel){
-    console.log(eventModel.events);
     this.eventModel = eventModel.events;
     this.destinationModel = destinationModel;
     this.offerModel = offerModel;
@@ -20,8 +19,7 @@ export default class TripPresenter {
 
   init() {
     this.boardEvents = [...this.pointModel.get()];
-    const formEditComponent = new FormEditView(this.boardEvents[0], this.destinationModel);
-    console.log(this.boardEvents);
+    const formEditComponent = new FormEditView(this.boardEvents[0], this.destinationModel, this.offerModel);
     render(this.tripSortComponent, this.tripEventContainer, 'afterbegin');
     render(this.listComponent, this.tripEventContainer);
     render(formEditComponent, this.listComponent.getElement());

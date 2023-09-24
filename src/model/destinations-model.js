@@ -9,7 +9,6 @@ export default class DestinationsModel {
   }
 
   getById(id) {
-    console.log('!!!', id)
     return this.destinationsModel.find((destination) => destination.id === id);
   }
 }
