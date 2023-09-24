@@ -1,14 +1,14 @@
 import {createElement} from '../../render.js';
 
-function createEventViewTemplate() {
+function createPointViewTemplate(event, dest) {
   return `
   <li class="trip-events__item">
   <div class="event">
-    <time class="event__date" datetime="2019-03-18">MAR 18</time>
+    <time class="event__date" datetime="2019-03-18">${event.date_from}</time>
     <div class="event__type">
-      <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
+      <img class="event__type-icon" width="42" height="42" src="img/icons/${event.type}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">Taxi Amsterdam</h3>
+    <h3 class="event__title">${event.type} ${dest.getById(event.destination).name}</h3>
     <div class="event__schedule">
       <p class="event__time">
         <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
@@ -18,7 +18,7 @@ function createEventViewTemplate() {
       <p class="event__duration">30M</p>
     </div>
     <p class="event__price">
-      &euro;&nbsp;<span class="event__price-value">20</span>
+      &euro;&nbsp;<span class="event__price-value">${event.base_price}</span>
     </p>
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
@@ -41,9 +41,14 @@ function createEventViewTemplate() {
 </li>`;
 }
 
-export default class EventView {
+export default class PointView {
+  constructor({event, dest}) {
+    this.event = event;
+    this.dest = dest;
+  }
+
   getTemplate() {
-    return createEventViewTemplate();
+    return createPointViewTemplate(this.event, this.dest);
   }
 
   getElement() {
