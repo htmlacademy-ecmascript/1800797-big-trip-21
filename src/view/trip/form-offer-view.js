@@ -1,13 +1,14 @@
 // import { createElement } from '../../render.js';
+import AbstractView from '../../framework/view/abstract-view.js';
 
 function createFormOfferViewTemplate(offer, index, pointOffers) {
   return `
   <div class="event__offer-selector">
-    <input 
-      class="event__offer-checkbox  visually-hidden" 
-      id="event-offer-luggage-${index}" 
-      type="checkbox" 
-      name="event-offer-luggage" 
+    <input
+      class="event__offer-checkbox  visually-hidden"
+      id="event-offer-luggage-${index}"
+      type="checkbox"
+      name="event-offer-luggage"
       ${pointOffers.includes(offer.id) ? 'checked' : ''}
       >
     <label class="event__offer-label" for="event-offer-luggage-${index}">
@@ -19,14 +20,15 @@ function createFormOfferViewTemplate(offer, index, pointOffers) {
   `;
 }
 
-export default class FormOfferView {
+export default class FormOfferView extends AbstractView{
   constructor(offer, i, pointOffers) {
+    super()
     this.offer = offer;
     this.index = i;
     this.pointOffers = pointOffers;
   }
 
-  getTemplate() {
+  get template() {
     return createFormOfferViewTemplate(this.offer, this.index, this.pointOffers)
   }
 

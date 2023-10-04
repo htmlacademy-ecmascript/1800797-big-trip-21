@@ -1,4 +1,5 @@
 import {createElement} from '../../render.js';
+import AbstractView from '../../framework/view/abstract-view.js';
 
 function createSortViewTemplate() {
   return `
@@ -9,7 +10,7 @@ function createSortViewTemplate() {
             </div>
 
             <div class="trip-sort__item  trip-sort__item--event">
-              <input id="sort-event" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-event" disabled>
+              <input id="sort-event" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-event">
               <label class="trip-sort__btn" for="sort-event">Event</label>
             </div>
 
@@ -24,24 +25,26 @@ function createSortViewTemplate() {
             </div>
 
             <div class="trip-sort__item  trip-sort__item--offer">
-              <input id="sort-offer" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-offer" disabled>
+              <input id="sort-offer" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-offer">
               <label class="trip-sort__btn" for="sort-offer">Offers</label>
             </div>
           </form>`;
 }
 
-export default class SortView {
-  getTemplate() {
+export default class SortView extends AbstractView {
+  constructor({onSortTypeChange}) {
+    super();
+    this.onSortTypeChange = onSortTypeChange;
+    this.element.addEventListener('change', this.#sortTypeHandle);
+  }
+
+  get template() {
     return createSortViewTemplate();
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
+  #sortTypeHandle = (evt) => {
+    this.onSortTypeChange(evt.target.value);
+  };
 
   removeElement() {
     this.element = null;

@@ -1,5 +1,6 @@
 import { createElement } from '../../render.js';
 import FormOfferView from './form-offer-view.js';
+import AbstractView from '../../framework/view/abstract-view.js';
 
 function getOffers(type, offers) {
   console.log(offers.get().find((item) => item.type === type).offers)
@@ -105,7 +106,7 @@ function createFormEditViewTemplate(point, destinations, offers) {
                     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
                     <div class="event__available-offers">
-                      ${getOffers(point.type, offers).map((item, i) => new FormOfferView(item, i, point.offers).getTemplate()).join('')}
+                      ${getOffers(point.type, offers).map((item, i) => new FormOfferView(item, i, point.offers).template).join('')}
                     </div>
                   </section>
 
@@ -116,8 +117,8 @@ function createFormEditViewTemplate(point, destinations, offers) {
                     <div class="event__photos-container">
                       <div class="event__photos-tape">
                         ${destinations.getById(point.destination).pictures.map(item =>
-                            `<img class="event__photo" src="${item.src}" alt="${item.description}">`
-                          ).join('')}
+    `<img class="event__photo" src="${item.src}" alt="${item.description}">`
+  ).join('')}
                       </div>
                     </div>
                   </section>
@@ -125,26 +126,25 @@ function createFormEditViewTemplate(point, destinations, offers) {
               </form>`;
 }
 
-export default class FormEditView {
-  constructor(point, destinations, offers) {
+export default class FormEditView extends AbstractView {
+  constructor({point, destinations, offers, closeEditForm}) {
+    super();
     this.offers = offers;
     this.point = point;
     this.destinations = destinations;
+    this.closeEditForm = closeEditForm;
+
+    this.element.addEventListener('submit', this.#onSubmit)
   }
 
-  getTemplate() {
+  get template() {
     return createFormEditViewTemplate(this.point, this.destinations, this.offers);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
 
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  #onSubmit = (evt) => {
+    evt.preventDefault();
+    this.closeEditForm();
+    console.log('CloseForm');
   }
 }
