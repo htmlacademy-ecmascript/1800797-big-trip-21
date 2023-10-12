@@ -1,6 +1,6 @@
 import DestinationMock from '../mock/destination.js';
 import OffersMock from '../mock/offers.js';
-import { getRandomPoint } from '../mock/points';
+import { getPoints } from '../mock/points';
 import { TASK_COUNT } from '../constance.js';
 
 
@@ -38,6 +38,7 @@ export default class Service {
   }
 
   generatePoints() {
-    return Array.from({length: TASK_COUNT}, getRandomPoint);
+    return getPoints(TASK_COUNT);
+    // return Array.from({length: TASK_COUNT}, getRandomPoint);
   }
 }
