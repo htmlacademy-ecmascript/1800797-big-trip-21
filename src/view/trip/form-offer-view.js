@@ -10,6 +10,7 @@ function createFormOfferViewTemplate(offer, index, pointOffers) {
       type="checkbox"
       name="event-offer-luggage"
       ${pointOffers.includes(offer.id) ? 'checked' : ''}
+      data-id = ${offer.id}
       >
     <label class="event__offer-label" for="event-offer-luggage-${index}">
       <span class="event__offer-title">${offer.title}</span>

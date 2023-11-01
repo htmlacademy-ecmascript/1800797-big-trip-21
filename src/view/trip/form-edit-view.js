@@ -126,7 +126,8 @@ function createFormEditViewTemplate({state, destinations, offers}) {
 }
 
 export default class FormEditView extends AbstractStatefulView {
-  constructor({point, destinations, offers, closeEditForm}) {
+  #updatePoint;
+  constructor({point, destinations, offers, closeEditForm, updatePoint}) {
     super();
     this.offers = offers;
     // this.point = point;
@@ -134,16 +135,41 @@ export default class FormEditView extends AbstractStatefulView {
     this.closeEditForm = closeEditForm;
     this._setState(FormEditView.parsePointToState(point));
     this._restoreHandlers();
-
+    this.#updatePoint = updatePoint;
   }
 
   _restoreHandlers() {
     this.element.addEventListener('submit', this.#onSubmit);
     this.element.querySelector('.event__type-group').addEventListener('change', this.#chooseTypeHandler);
     this.element.querySelector('.event__input').addEventListener('change', this.#chooseDestinationHandler);
-
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#changePriceHandler);
+    this.element.querySelector('.event__available-offers').addEventListener('change', this.#pickOffersHandler);
 
   }
+
+  #pickOffersHandler = (evt) => {
+    console.log(evt.target.dataset.id);
+    const checkedOffers = Array.from(document.querySelectorAll('.event__offer-checkbox'))
+      .filter((item) => item.checked)
+      .map((item) => item.dataset.id);
+    console.log(checkedOffers);
+    this._setState({
+      point: {
+        ...this._state.point,
+        offers: [...checkedOffers]
+      }
+    });
+  };
+
+  #changePriceHandler = (evt) => {
+    this._setState({
+      point: {
+        ...this._state.point,
+        // eslint-disable-next-line camelcase
+        base_price: evt.target.value
+      }
+    });
+  };
 
   #chooseTypeHandler = (evt) => {
     this.updateElement({
@@ -162,8 +188,8 @@ export default class FormEditView extends AbstractStatefulView {
         ...this._state.point,
         destination: this.destinations.getByName(evt.target.value).id
       }
-    })
-  }
+    });
+  };
 
   get template() {
     return createFormEditViewTemplate({state: this._state, destinations: this.destinations, offers: this.offers});
@@ -175,6 +201,7 @@ export default class FormEditView extends AbstractStatefulView {
 
   #onSubmit = (evt) => {
     evt.preventDefault();
+    this.#updatePoint(this._state.point);
     this.closeEditForm();
     console.log('CloseForm');
   };
