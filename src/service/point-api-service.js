@@ -48,10 +48,7 @@ export default class PointApiService extends ApiService {
       url: `${EndPoints.POINTS}/${pointId}`,
       method: Method.DELETE,
       headers: new Headers({ 'Content-Type': 'application/json' }),
+
     });
-
-    const parsedResponse = await ApiService.parseResponse(response);
-
-    return parsedResponse;
   }
 }

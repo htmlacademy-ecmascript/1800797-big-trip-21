@@ -64,7 +64,9 @@ export default class NewPointPresenter {
       UserAction.ADD_POINT,
       UpdateType.MINOR,
       point
-    )
+    );
+    this.addNewPointButton.reset();
+
   };
 }
 

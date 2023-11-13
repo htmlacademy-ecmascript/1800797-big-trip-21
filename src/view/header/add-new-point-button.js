@@ -37,4 +37,10 @@ export default class AddNewPointButtonView extends AbstractStatefulView {
   get template() {
     return createAddNewPointButton({disabled:this._state.addingMode});
   }
+
+  reset = () => {
+    this.updateElement({
+      addingMode: !this._state.addingMode
+    });
+  }
 }
