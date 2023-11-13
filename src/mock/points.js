@@ -328,4 +328,9 @@ function getRandomPoint() {
   return getRandomArrayElement(mockPoints);
 }
 
-export {getRandomPoint};
+
+function getPoints(n) {
+  return mockPoints.slice(0, n);
+}
+
+export {getRandomPoint , getPoints};

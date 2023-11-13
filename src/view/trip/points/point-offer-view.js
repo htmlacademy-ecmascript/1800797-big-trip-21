@@ -1,4 +1,5 @@
 import { createElement } from '../../../render.js';
+import AbstractView from '../../../framework/view/abstract-view.js';
 
 function createPointOfferViewTemplate(title, price) {
   return `
@@ -10,22 +11,23 @@ function createPointOfferViewTemplate(title, price) {
   `;
 }
 
-export default class PointOfferView {
+export default class PointOfferView extends AbstractView {
   constructor({ title, price }) {
+    super()
     this.offerTitle = title;
     this.offerPrice = price;
   }
 
-  getTemplate() {
+  get template() {
     return createPointOfferViewTemplate(this.offerTitle, this.offerPrice);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
-  }
+  // getElement() {
+  //   if (!this.element) {
+  //     this.element = createElement(this.getTemplate());
+  //   }
+  //   return this.element;
+  // }
 }
 
 

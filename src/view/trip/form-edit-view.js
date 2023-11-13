@@ -1,19 +1,29 @@
 import { createElement } from '../../render.js';
 import FormOfferView from './form-offer-view.js';
+import AbstractStatefulView from '../../framework/view/abstract-stateful-view.js';
 
 function getOffers(type, offers) {
-  console.log(offers.get().find((item) => item.type === type).offers)
+  console.log(offers.get().find((item) => item.type === type).offers);
   return offers.get().find((item) => item.type === type).offers;
 }
 
-function createFormEditViewTemplate(point, destinations, offers) {
+function createFormEditViewTemplate({state, destinations, offers, newPointMode}) {
   return `
   <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
                   <div class="event__type-wrapper">
                     <label class="event__type  event__type-btn" for="event-type-toggle-1">
                       <span class="visually-hidden">Choose event type</span>
-                      <img class="event__type-icon" width="17" height="17" src="img/icons/${point.type}.png" alt="Event type icon">
+                      ${state.point.type ? `
+                      <img
+                      class="event__type-icon"
+                      width="17"
+                      height="17"
+                      src="img/icons/${state.point.type}.png"
+                      alt="Event type icon"
+                      >
+                      ` : ''}
+
                     </label>
                     <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -71,13 +81,19 @@ function createFormEditViewTemplate(point, destinations, offers) {
 
                   <div class="event__field-group  event__field-group--destination">
                     <label class="event__label  event__type-output" for="event-destination-1">
-                      ${point.type}
+                      ${state.point.type ? state.point.type : ''}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinations.getById(point.destination).name}" list="destination-list-1">
+                    <input
+                    class="event__input  event__input--destination"
+                    id="event-destination-1"
+                    type="text"
+                    name="event-destination"
+                    value="${state.point.destination ? destinations.getById(state.point.destination).name : ''}"
+                    list="destination-list-1"
+                    >
                     <datalist id="destination-list-1">
-                      <option value="Amsterdam"></option>
-                      <option value="Geneva"></option>
-                      <option value="Chamonix"></option>
+                    ${destinations.get().map((item) => `<option value="${item.name}"></option>`).join('')}
+
                     </datalist>
                   </div>
 
@@ -94,30 +110,52 @@ function createFormEditViewTemplate(point, destinations, offers) {
                       <span class="visually-hidden">Price</span>
                       &euro;
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${point.base_price}">
+                    <input
+                    class="event__input  event__input--price"
+                    id="event-price-1"
+                    type="text"
+                    name="event-price"
+                    value="${state.point.base_price}"
+                    >
                   </div>
 
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-                  <button class="event__reset-btn" type="reset">Cancel</button>
+                  <button class="event__reset-btn event-reset" type="reset">Cancel</button>
+                  ${!newPointMode ? `
+                  <button class="event__reset-btn event-delete" type="button">Delete</button>
+                  ` : ''}
                 </header>
                 <section class="event__details">
                   <section class="event__section  event__section--offers">
                     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
                     <div class="event__available-offers">
-                      ${getOffers(point.type, offers).map((item, i) => new FormOfferView(item, i, point.offers).getTemplate()).join('')}
+                    ${state.point.offers
+    ? `${getOffers(state.point.type, offers)
+      .map((item, i) => new FormOfferView(item, i, state.point.offers).template)
+      .join('')}
+                        `
+    : ''}
                     </div>
                   </section>
 
                   <section class="event__section  event__section--destination">
                     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-                    <p class="event__destination-description">${destinations.getById(point.destination).description}</p>
+                    <p class="event__destination-description">
+                    ${state.point.destination
+    ? destinations.getById(state.point.destination).description
+    : ''
+}
+                    </p>
 
                     <div class="event__photos-container">
                       <div class="event__photos-tape">
-                        ${destinations.getById(point.destination).pictures.map(item =>
-                            `<img class="event__photo" src="${item.src}" alt="${item.description}">`
-                          ).join('')}
+                        ${state.point.destination
+    ? destinations.getById(state.point.destination).pictures
+      .map((item) => `<img class="event__photo" src="${item.src}" alt="${item.description}">`)
+      .join('')
+    : ''
+}
                       </div>
                     </div>
                   </section>
@@ -125,26 +163,115 @@ function createFormEditViewTemplate(point, destinations, offers) {
               </form>`;
 }
 
-export default class FormEditView {
-  constructor(point, destinations, offers) {
+export default class FormEditView extends AbstractStatefulView {
+  #updatePoint;
+  #deletePoint;
+  #newPointMode = null;
+  constructor({
+    point,
+    destinations,
+    offers,
+    closeEditForm,
+    updatePoint,
+    newPoint = false,
+    deletePoint
+  }) {
+    super();
     this.offers = offers;
-    this.point = point;
+    // this.point = point;
     this.destinations = destinations;
+    this.closeEditForm = closeEditForm;
+    this._setState(FormEditView.parsePointToState(point));
+    this.#updatePoint = updatePoint;
+    this.#newPointMode = newPoint;
+    this.#deletePoint = deletePoint;
+    this._restoreHandlers();
+    // console.log('newPointMode')
   }
 
-  getTemplate() {
-    return createFormEditViewTemplate(this.point, this.destinations, this.offers);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  _restoreHandlers() {
+    this.element.addEventListener('submit', this.#onSubmit);
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#chooseTypeHandler);
+    this.element.querySelector('.event__input').addEventListener('change', this.#chooseDestinationHandler);
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#changePriceHandler);
+    this.element.querySelector('.event__available-offers').addEventListener('change', this.#pickOffersHandler);
+    this.element.querySelector('.event-reset').addEventListener('click', this.#onCancel);
+    if (this.element.querySelector('.event-delete')) {
+      this.element.querySelector('.event-delete').addEventListener('click', this.#onDelete);
     }
-
-    return this.element;
   }
 
-  removeElement() {
-    this.element = null;
+  #pickOffersHandler = (evt) => {
+    console.log(evt.target.dataset.id);
+    const checkedOffers = Array.from(document.querySelectorAll('.event__offer-checkbox'))
+      .filter((item) => item.checked)
+      .map((item) => item.dataset.id);
+    console.log(checkedOffers);
+    this._setState({
+      point: {
+        ...this._state.point,
+        offers: [...checkedOffers]
+      }
+    });
+  };
+
+  #changePriceHandler = (evt) => {
+    this._setState({
+      point: {
+        ...this._state.point,
+        // eslint-disable-next-line camelcase
+        base_price: evt.target.value
+      }
+    });
+  };
+
+  #chooseTypeHandler = (evt) => {
+    this.updateElement({
+      point: {
+        ...this._state.point,
+        type: evt.target.value,
+        offers: []
+      }
+    });
+  };
+
+  #chooseDestinationHandler = (evt) => {
+    console.log(evt.target.value);
+    this.updateElement({
+      point: {
+        ...this._state.point,
+        destination: this.destinations.getByName(evt.target.value).id
+      }
+    });
+  };
+
+  get template() {
+    return createFormEditViewTemplate({
+      state: this._state,
+      destinations: this.destinations,
+      offers: this.offers,
+      newPointMode: this.#newPointMode
+    });
   }
+
+  static parsePointToState = (point) =>({point});
+
+  static parseStateToPoint = (state) => state.point;
+
+  #onSubmit = (evt) => {
+    evt.preventDefault();
+    this.#updatePoint(this._state.point);
+    this.closeEditForm();
+  };
+
+  #onCancel = (evt) => {
+    evt.preventDefault();
+    this.closeEditForm();
+  };
+
+  #onDelete = (evt) => {
+    evt.preventDefault();
+    this.#deletePoint(this._state.point);
+    this.closeEditForm();
+  };
 }

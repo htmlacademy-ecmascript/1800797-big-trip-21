@@ -1,4 +1,4 @@
-import {render} from '../render.js';
+import {render} from '../framework/render.js';
 import TripInfoView from '../view/header/trip-info.js';
 import FilterView from '../view/header/filter.js';
 
