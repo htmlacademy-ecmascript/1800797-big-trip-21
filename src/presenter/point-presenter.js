@@ -63,8 +63,12 @@ export default class PointPresenter {
         this.#replaceFormToCard();
       },
       updatePoint: (point) => {
-        this.#updatePointHandler(point)
+        this.#updatePointHandler(point);
+      },
+      deletePoint: (point) => {
+        this.#deletePointHandler(point);
       }
+
     });
     if (prevPointComponent === null || prevFormEditComponent === null) {
       render(this.#pointComponent, this.#listComponent.element);
@@ -88,6 +92,14 @@ export default class PointPresenter {
     );
   }
 
+  #deletePointHandler(point) {
+    this.#onDataChange(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
+  }
+
   resetView() {
     if (this.#mode !== Mode.DEFAULT) {
       this.#replaceFormToCard();
@@ -97,6 +109,7 @@ export default class PointPresenter {
   #changeFavourite() {
     this.#setFavourite(this.#point);
   }
+
 
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape') {

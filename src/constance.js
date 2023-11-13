@@ -20,7 +20,7 @@ export const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
-export const EndPonts = {
+export const EndPoints = {
   POINTS: 'points',
   DESTINATIONS: 'destinations',
   OFFERS: 'offers'
@@ -28,5 +28,7 @@ export const EndPonts = {
 
 export const Method = {
   GET: 'GET',
-  PUT: 'PUT'
+  PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE'
 };

@@ -4,6 +4,7 @@ import ListView from '../view/trip/list-view.js';
 import PointPresenter from './point-presenter.js';
 import { sort } from '../utils/sort.js';
 import { UpdateType, UserAction } from '../constance.js';
+import NewPointPresenter from './new-point-presenter.js';
 
 
 export default class TripPresenter {
@@ -14,6 +15,12 @@ export default class TripPresenter {
     this.offerModel = offerModel;
     this.pointModel = pointModel;
     this.pointModel.addObserver(this.#handlePointModelEvent);
+
+    const newPointPresenter = new NewPointPresenter({
+      destinationModel,
+      offerModel,
+      onDataAdd : this.#handleViewAction});
+    newPointPresenter.init();
   }
 
   tripSortComponent = new SortView({
@@ -44,6 +51,11 @@ export default class TripPresenter {
     switch(updateType){
       case UpdateType.MINOR :
         console.log('data.id ', data.id);
+        this.#clearPoints();
+        this.#renderPoints();
+        break;
+      case UpdateType.PATCH :
+        console.log('data.id ', data.id);
         this.#presenters.get(data.id).init(data);
         break;
       case UpdateType.INIT:
@@ -67,12 +79,12 @@ export default class TripPresenter {
       case UserAction.UPDATE_POINT:
         this.pointModel.updatePoint(updateType, update);
         break;
-      // case UserAction.ADD_TASK:
-      //   this.#tasksModel.addTask(updateType, update);
-      //   break;
-      // case UserAction.DELETE_TASK:
-      //   this.#tasksModel.deleteTask(updateType, update);
-      //   break;
+      case UserAction.ADD_POINT:
+        this.pointModel.addPoint(updateType, update);
+        break;
+      case UserAction.DELETE_POINT:
+        this.pointModel.deletePoint(updateType, update);
+        break;
     }
 
 

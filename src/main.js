@@ -7,6 +7,7 @@ import OfferModel from './model/offer-model.js';
 import PointsModel from './model/points-model.js';
 import PointApiService from './service/point-api-service.js';
 
+
 const AUTHORIZATION = 'Basic hS22344rwegy5ey';
 const END_POINT = 'https://21.objects.pages.academy/big-trip';
 
